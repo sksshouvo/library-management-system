@@ -21,11 +21,24 @@
             height: 200px;
             font-size: 40px;
         }
+        .btn {
+            @apply font-bold py-2 px-4 rounded;
+          }
+          .btn-blue {
+            @apply bg-blue-500 text-white;
+          }
+          .btn-blue:hover {
+            @apply bg-blue-700;
+          }
         </style>
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
         <div class="box">
-            <h1> <strong>Adplay PHP test</strong> </h1>
+            <h1> <strong>{{config('app.name')}}</strong> </h1>
+            
+        </div>
+        <div class="box">
+            <a href="\login">Login</a>
         </div>
     </body>
 </html>
