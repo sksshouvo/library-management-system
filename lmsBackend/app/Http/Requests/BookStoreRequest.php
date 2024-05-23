@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Rules\CheckEntity;
+use App\Models\Author;
+
 class BookStoreRequest extends FormRequest
 {
     /**
@@ -24,9 +27,9 @@ class BookStoreRequest extends FormRequest
         return [
             "title"        => ["required", "string"],
             "published_at" => ["required", "date_format:Y-m-d"],
-            "ISBN"         => ["required", "numeric", "min:13"],
+            "ISBN"         => ["required", "numeric", "min:13", "unique:books"],
             "total_copies" => ["required", "numeric"],
-            "author_id"    => ["required", "numeric"],
+            "author_id"    => ["required", "numeric", new CheckEntity(Author::class)],
         ];
     }
 }

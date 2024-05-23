@@ -19,8 +19,9 @@ return new class extends Migration
             $table->date("borrow_date")->nullable();
             $table->date("return_date")->nullable();
             $table->enum("status", Status::array());
+            $table->unsignedBigInteger("created_by")->nullable();
+            $table->unsignedBigInteger("updated_by")->nullable();
             $table->timestamps();
-
             $table->foreign('member_id')->references('id')->on('members')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('book_id')->references('id')->on('books')->onUpdate('cascade')->onDelete('cascade');
         });

@@ -2,19 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Wildside\Userstamps\Userstamps;
-
-class Book extends Model
+class Book extends BaseModel
 {
-    use HasFactory, Userstamps;
-
     protected $fillable = [
         "title",
         "published_at",
         "ISBN",
         "total_copies",
-        "author_id"
+        "author_id",
+        "created_by",
+        "updated_by",
     ];
+
+    /**
+     * Get the user that owns the Book
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author()
+    {
+        return $this->belongsTo(Author::class);
+    }
+
+    public function scopeIsbnWiseFilter($query, $ISBN): void {
+        $query->where("ISBN", $ISBN);
+    }
 }

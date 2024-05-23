@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberStoreRequest;
+use App\Repositories\MemberRepository;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
@@ -17,9 +22,18 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MemberStoreRequest $request, MemberRepository $memberService)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $member = $memberService->store($request->validated());
+            DB::commit();
+            return $this->successResponse(__('member.created'), $member->getData(), $request->bearerToken(), 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::emergency($e);
+            return $this->errorResponse(__('common.error'), $e, $request->bearerToken());
+        }
     }
 
     /**

@@ -12,6 +12,9 @@ Route::group(['prefix' => 'authentication'], function() {
     Route::get("login", [LoginController::class, 'login'])->name('auth.login');
 });
 
-Route::apiResource('book', BookController::class)->names('book');
-Route::apiResource('author', AuthorController::class)->names('author');
-Route::apiResource('member', AuthorController::class)->names('member');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResource('book', BookController::class)->names('book');
+    Route::apiResource('author', AuthorController::class)->names('author');
+    Route::apiResource('member', MemberController::class)->names('member');
+    Route::apiResource('borrow-book', BorrowBookController::class)->names('borrow.book');
+});

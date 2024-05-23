@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Member extends Model
+class Member extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, Userstamps;
+
+    protected $fillable = [
+        "first_name",
+        "last_name",
+        "phone_number",
+        "email",
+        "registration_date"
+    ];
 }
