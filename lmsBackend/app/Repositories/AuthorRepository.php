@@ -12,25 +12,27 @@ class AuthorRepository implements AuthorRepositoryInterface {
     public function __construct(private Author $author) {
         
     }
-    
+
     public function list(): JsonResponse {
-        return $this->author::all();
+        return response()->json(new AuthorCollection($this->author::paginate(config('app.paginate_size'))));
     }
 
     public function single($id): JsonResponse {
-       return $this->author::findOrFail($id);
+       return  response()->json(new AuthorResource($this->author::findOrFail($id)));
     }
 
-    public function store(array $data) : JsonResponse {
+    public function store(array $data): JsonResponse {
       $savedAuthor = $this->author::create($data);
       return response()->json(new AuthorResource($savedAuthor));
     }
 
     public function update(array $data, $id): JsonResponse {
-       return $this->author::whereId($id)->update($data);
+        $this->author::whereId($id)->update($data);
+        return $this->single($id);
     }
     
     public function delete($id): JsonResponse {
-        return $this->author::destroy($id);
+        $deletedAuthor = $this->author::destroy($id);
+        return response()->json($deletedAuthor);
     }
 }

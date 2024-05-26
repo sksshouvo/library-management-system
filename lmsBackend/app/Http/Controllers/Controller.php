@@ -12,7 +12,7 @@ abstract class Controller
         return response()->json([
             "message" => $msg,
             "errors" => $errors,
-            "data" => $data,
+            "result" => $data,
             "token" => $token
         ], $code);
     }
@@ -21,7 +21,7 @@ abstract class Controller
         return response()->json([
             "message" => $msg,
             "errors" => NULL,
-            "data" => $data,
+            "result" => $data,
             "token" => $token
         ], $code);
     }

@@ -34,4 +34,5 @@ class BidRequestRepository implements BidRequestRepositoryInterface {
         ->dimensionWiseFilter($this->extractDimension($data['imp']))
         ->first();
     }
+
 }

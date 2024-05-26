@@ -11,12 +11,16 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
+    public function __construct(public MemberRepository $memberRepository) {
         //
+    }
+    /**
+ * Display a listing of the resource.
+     */
+    public function index() : JsonResponse
+    {
+        $member = $this->memberRepository->list()->getData();
+        return $this->successResponse(__('member.list'), $member, request()->bearerToken(), 200);
     }
 
     /**
@@ -39,9 +43,13 @@ class MemberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        //
+        try {
+            return $this->successResponse(__('member.single'), $this->memberRepository->single($id)->getData(), request()->bearerToken(), 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse(__('common.no_data_found'), NULL, request()->bearerToken(), 422);
+        }
     }
 
     /**

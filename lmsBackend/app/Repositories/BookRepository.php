@@ -14,9 +14,9 @@ class BookRepository implements BookRepositoryInterface {
             "author"
         ];
     }
-    
+
     public function list(): JsonResponse {
-        return response()->json(new BookCollection($this->book::with($this->with)->paginate(10)));
+        return response()->json(new BookCollection($this->book::with($this->with)->paginate(config('app.paginate_size'))));
     }
 
     public function single($id): JsonResponse {

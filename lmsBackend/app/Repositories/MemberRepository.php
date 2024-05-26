@@ -10,15 +10,16 @@ use App\Models\Member;
 class MemberRepository implements MemberRepositoryInterface {
 
     public function __construct(private Member $member) {
-        
+        $this->with = [
+        ];
     }
     
     public function list(): JsonResponse {
-        return $this->member::all();
+        return response()->json(new MemberCollection($this->member::paginate(config('app.paginate_size'))));
     }
 
     public function single($id): JsonResponse {
-       return $this->member::findOrFail($id);
+       return response()->json(new MemberResource($this->member::with($this->with)->findOrFail($id)));
     }
 
     public function store(array $data) : JsonResponse {
@@ -27,10 +28,12 @@ class MemberRepository implements MemberRepositoryInterface {
     }
 
     public function update(array $data, $id): JsonResponse {
-       return $this->member::whereId($id)->update($data);
+        $updatedMember = $this->member::whereId($id)->update($data);
+       return $this->single($id);
     }
     
     public function delete($id): JsonResponse {
-        return $this->member::destroy($id);
+        $deletedMember = $this->member::destroy($id);
+        return response()->json($deletedMember);
     }
 }

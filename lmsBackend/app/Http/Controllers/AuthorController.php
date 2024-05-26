@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthorUpdateRequest;
 use App\Http\Requests\AuthorStoreRequest;
 use App\Repositories\AuthorRepository;
 use Illuminate\Support\Facades\Log;
@@ -12,14 +13,16 @@ use Illuminate\Http\Request;
 class AuthorController extends Controller
 {
     public function __construct(public AuthorRepository $authorRepository) {
-
+        //
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return $this->successResponse(__('author.list'), $this->authorRepository->list()->getData(), $request->bearerToken(), 200);
+        $author = $this->authorRepository->list()->getData();
+        return $this->successResponse(__('author.list'), $author, request()->bearerToken(), 200);
     }
 
     /**
@@ -28,7 +31,6 @@ class AuthorController extends Controller
     public function store(AuthorStoreRequest $request): JsonResponse
     {
         try {
-            
             DB::beginTransaction();
             $author = $this->authorRepository->store($request->validated());
             DB::commit();
@@ -47,9 +49,9 @@ class AuthorController extends Controller
     {
         $singleAuthor = $this->authorRepository->single($id)->getData();
         if ($singleAuthor) {
-            return $this->successResponse(__('author.list'), $singleAuthor, $request->bearerToken(), 200);
+            return $this->successResponse(__('author.list'), $singleAuthor, request()->bearerToken(), 200);
         } else {
-            return $this->errorResponse(__('author.invalid_id'), NULL, $request->bearerToken(), 422);
+            return $this->errorResponse(__('author.invalid_id'), NULL, request()->bearerToken(), 422);
         }
 
     }
@@ -57,7 +59,7 @@ class AuthorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AuthorUpdateRequest $request, string $id)
     {
         try {
             DB::beginTransaction();
@@ -70,11 +72,10 @@ class AuthorController extends Controller
             return $this->errorResponse(__('common.error'), $e, $request->bearerToken());
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, int $id) : JsonResponse
     {
         try {
             DB::beginTransaction();
