@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\CheckValue;
+use App\Models\Member;
 
 class MemberUpdateRequest extends FormRequest
 {
@@ -25,8 +27,8 @@ class MemberUpdateRequest extends FormRequest
         return [
             "first_name"        => ["required", "string"],
             "last_name"         => ["required", "string"],
-            "phone_number"      => ["required", "phone:INTERNATIONAL"],
-            "email"             => ["required", "email"],
+            "phone_number"      => ["required", "phone:INTERNATIONAL", new CheckValue(Member::class)],
+            "email"             => ["required", "email", new CheckValue(Member::class)],
             "registration_date" => ["required", "date_format:Y-m-d"]
         ];
     }

@@ -2,9 +2,10 @@
 
 return [
     "list" => "List of members",
-    "store" => "Member Registered Successfully",
     "single" => "Single member",
-    "created" => "Member Registered Successfully",
+    "invalid_id" => "Invalid Id",
     "updated" => "Member Updated Successfully",
     "deleted" => "Member Deleted Successfully",
+    "store" => "Member Registered Successfully",
+    "created" => "Member Registered Successfully",
 ];

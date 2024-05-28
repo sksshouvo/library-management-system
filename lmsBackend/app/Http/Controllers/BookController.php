@@ -92,4 +92,5 @@ class BookController extends Controller
             return $this->errorResponse(__('common.error'), $e, $request->bearerToken());
         }
     }
+    
 }
