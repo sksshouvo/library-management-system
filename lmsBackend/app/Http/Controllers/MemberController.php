@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberUpdateRequest;
 use App\Http\Requests\MemberStoreRequest;
 use App\Repositories\MemberRepository;
 use Illuminate\Support\Facades\Log;
@@ -55,16 +56,38 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(MemberUpdateRequest $request, string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $member = $this->memberRepository->update($request->validated(), $id);
+            DB::commit();
+            return $this->successResponse(__('member.updated'), $member->getData(), $request->bearerToken(), 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::emergency($e);
+            return $this->errorResponse(__('common.error'), $e, $request->bearerToken());
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, int $id) : JsonResponse
     {
-        //
+        try {
+            DB::beginTransaction();
+            $member = $this->memberRepository->delete($id);
+            DB::commit();
+            if ($member->getData()) {
+                return $this->successResponse(__('member.deleted'), NULL, $request->bearerToken(), 200);
+            } else {
+                return $this->errorResponse(__('member.invalid_id'), NULL, $request->bearerToken());
+            }
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::emergency($e);
+            return $this->errorResponse(__('common.error'), $e, $request->bearerToken());
+        }
     }
 }

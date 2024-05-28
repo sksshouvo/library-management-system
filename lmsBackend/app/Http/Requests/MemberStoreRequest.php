@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemberStoreRequest extends FormRequest
@@ -29,4 +31,25 @@ class MemberStoreRequest extends FormRequest
             "registration_date" => ["required", "date_format:Y-m-d"]
         ];
     }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    
+     protected function failedValidation(Validator $validator)
+     {
+         $response = [
+             'message' => 'The given data was invalid.',
+             'errors' => $validator->errors(),
+             'result' => NULL,
+             'token' => request()->bearerToken()
+         ];
+ 
+         throw new HttpResponseException(response()->json($response, 422));
+     }
 }

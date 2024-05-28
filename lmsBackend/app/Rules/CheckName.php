@@ -17,9 +17,11 @@ class CheckName implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->model::where("name", $value)->first()) {
-            $fail('The given :attribute is invalid.');
+        $routeId = request()->segment(3);
+        $checkAuthor = $this->model::where("name", $value)->first();
+        
+        if ($checkAuthor && ($checkAuthor->id != $routeId)) {
+            $fail('The given :attribute is already exist.');
         }
-
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use  App\Rules\CheckName;
 use App\Models\Author;
@@ -24,8 +25,29 @@ class AuthorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string"],
+            "name" => ["required", "string", new CheckName(Author::class)],
             "bio" => ["required", "string"],
         ];
     }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    
+     protected function failedValidation(Validator $validator)
+     {
+         $response = [
+             'message' => 'The given data was invalid.',
+             'errors' => $validator->errors(),
+             'result' => NULL,
+             'token' => request()->bearerToken()
+         ];
+ 
+         throw new HttpResponseException(response()->json($response, 422));
+     }
 }

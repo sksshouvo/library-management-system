@@ -30,7 +30,11 @@ class BookRepository implements BookRepositoryInterface {
 
     public function update(array $data, $id): JsonResponse {
         $updatedBook = $this->book::whereId($id)->update($data);
-       return $this->single($id);
+        if ($updatedBook) {
+            return $this->single($id);
+        } else {
+            return response()->json(["message" => __('common.no_data_found')]);
+        }
     }
     
     public function delete($id): JsonResponse {

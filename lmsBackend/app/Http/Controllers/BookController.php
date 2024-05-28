@@ -42,9 +42,13 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, string $id)
+    public function show(string $id)
     {
-        return $this->successResponse(__('book.list'), $this->bookRepository->single($id)->getData(), $request->bearerToken(), 200);
+        try {
+            return $this->successResponse(__('book.list'), $this->bookRepository->single($id)->getData(), request()->bearerToken(), 200);
+        } catch (\Throwable $th) {
+            return $this->errorResponse(__('common.no_data_found'), $th, request()->bearerToken(), 200);
+        }
     }
 
     /**
@@ -55,6 +59,9 @@ class BookController extends Controller
         try {
             DB::beginTransaction();
             $book = $this->bookRepository->update($request->validated(), $id);
+            if (!empty($book->getdata()->message)) {
+                return $this->errorResponse(__('common.no_data_found'), NULL, $request->bearerToken(), 422);
+            }
             DB::commit();
             return $this->successResponse(__('book.updated'), $book->getData(), $request->bearerToken(), 200);
         } catch (\Exception $e) {

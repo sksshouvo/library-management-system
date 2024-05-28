@@ -4,8 +4,6 @@ namespace App\Models;
 
 class BorrowBook extends BaseModel
 {
-    use HasFactory, Userstamps;
-
     protected $fillable = [
         "id",
         "member_id",
