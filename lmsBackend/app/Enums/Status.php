@@ -7,7 +7,7 @@ enum Status: string
 {
     use EnumToArray;
 
-    case BORROWED = 'borrowd';
+    case BORROWED = 'borrowed';
     case RETURNED = 'returned';
     case OVERDUE  = 'overdue';
    

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger("book_id")->nullable();
             $table->date("borrow_date")->nullable();
             $table->date("return_date")->nullable();
-            $table->enum("status", Status::array());
+            $table->enum("status", Status::values())->deafult('borowed')->nullable();
             $table->unsignedBigInteger("created_by")->nullable();
             $table->unsignedBigInteger("updated_by")->nullable();
             $table->timestamps();

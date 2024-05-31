@@ -8,8 +8,18 @@ use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
+Route::fallback(function () {
+    $response = [
+        'message' => __('common.invalid_endpoint'),
+        'errors' => NULL,
+        'result' => NULL,
+        'token' => NULL
+    ];
+    return response()->json($response, 403);
+});
+
 Route::group(['prefix' => 'authentication'], function() {
-    Route::get("login", [LoginController::class, 'login'])->name('auth.login');
+    Route::post("login", [LoginController::class, 'login'])->name('auth.login');
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -18,3 +28,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('member', MemberController::class)->names('member');
     Route::apiResource('borrow-book', BorrowBookController::class)->names('borrow.book');
 });
+
