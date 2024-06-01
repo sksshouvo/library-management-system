@@ -29,6 +29,11 @@
             </base-button>
           </form>
         </div>
+        <div class="card-footer">
+          <base-alert type="danger" dismissible v-if="this.message" class="text-left">
+          <span>{{this.message}}</span>
+          </base-alert>
+        </div>
       </div>
     </div>
   </div>
@@ -36,39 +41,26 @@
 
 <script>
 import axios from "axios";
-import NotificationTemplate from "./Notifications/NotificationTemplate";
-
+import { BaseAlert } from "@/components";
 export default {
   components: {
-    NotificationTemplate,
+    BaseAlert,
   },
   data() {
     return {
       notifications: {
         topCenter: false,
       },
-      email: null,
-      password: null,
+      email: "testuser@test.com",
+      password: "12345678",
       loading: false,
       serverError: null,
       info: null,
-      errors: {}, // Add errors object here
+      errors: {},
+      message: null
     };
   },
   methods: {
-    notifyVue(verticalAlign, horizontalAlign, color, errors = []) {
-      this.$notify({
-        component: NotificationTemplate,
-        icon: "tim-icons icon-bell-55",
-        horizontalAlign: horizontalAlign,
-        verticalAlign: verticalAlign,
-        type: color,
-        timeout: 0,
-        props: {
-          errors: errors,
-        },
-      });
-    },
     async login() {
       this.loading = true;
       try {
@@ -79,23 +71,23 @@ export default {
             password: this.password,
           }
         );
-        this.info = response;
+        this.info = response.data.result;
       } catch (error) {
         if (error.response && error.response.data) {
-          this.errors = error.response.data.errors || {};
-          const errorMessages = Object.values(this.errors).flat();
-          this.notifyVue("top", "right", "danger", errorMessages);
+          this.message = error.response.data.message || null;
         } else {
-          this.serverError = "An error occurred";
-          this.notifyVue("top", "right", "danger", [this.serverError]);
+          this.errors = "An error occurred";
         }
       } finally {
         this.loading = false;
+        if (this.info) {
+          localStorage.setItem('user', JSON.stringify(this.info))
+          this.$router.push('/admin');
+        }
       }
     },
   },
 };
-
 </script>
 
 <style scoped>
