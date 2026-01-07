@@ -1,12 +1,12 @@
-## Lead Academy Test Project
+## Library Management System
 ## Installation guide of project
 
 It's very simple to install this project
 
 - First step
-`Git Clone https://github.com/sksshouvo/adplay-test`
+`Git Clone https://github.com/sksshouvo/library-management-system`
 - Second Step
-`cd adplay-test`
+`cd library-management-system`
 - Third Step
 `composer install` (Make sure you have installed composer-setup in your device)
 - Forth Step
